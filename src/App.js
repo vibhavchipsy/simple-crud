@@ -23,7 +23,10 @@ function App() {
     }
 
     setEditIndex(null); // Reset edit index
-    reset(); // Reset form fields after submission
+    reset({
+      name: '',
+      email: ''
+    }); // Reset form fields explicitly to empty
     console.log("Form reset, editIndex reset to null"); // Log that the form was reset
   };
 
