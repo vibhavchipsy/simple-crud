@@ -1,33 +1,42 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './styles/App.scss';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
-
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [items, setItems] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
 
   const onSubmit = (data) => {
+    console.log("Submitting data:", data);
     if (editIndex !== null) {
       // Update existing item
       const updatedItems = [...items];
       updatedItems[editIndex] = data;
       setItems(updatedItems);
+      console.log("Item updated:", updatedItems);
+
+      // Reset edit index to null after updating
       setEditIndex(null);
     } else {
       // Create new item
       setItems([...items, data]);
+      console.log("Item created:", data);
     }
-    reset(); // Reset form fields after submission
+
+    // This should clear the form fields after submission
+    reset();
+    console.log("Form reset!");
   };
 
+
   const handleEdit = (index) => {
-    setEditIndex(index);
-    reset(items[index]);
+    setEditIndex(index); // Set edit index
+    reset(items[index]); // Populate form with the current item
+    console.log("Editing item at index:", index);
   };
+
 
   const handleDelete = (index) => {
     setItems(items.filter((_, i) => i !== index));
