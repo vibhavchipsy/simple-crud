@@ -16,17 +16,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install CLOC
-        run: sudo apt-get update && sudo apt-get install -y cloc
+        run: sudo apt-get install cloc
 
       - name: Track Lines of Code
         run: |
-          git log --since="yesterday" --pretty=tformat: --numstat | awk '{ added += $1; deleted += $2; total += $1 - $2 } END { print "Date:", strftime("%Y-%m-%d"), "Added:", added, "Deleted:", deleted, "Net Change:", total }' >> loc_report.txt
+          git log --since="yesterday" --pretty=tformat: --numstat | awk '{ added += $1; deleted += $2; total += $1 - $2 } END { print "Date:", strftime("%Y-%m-%d"), "Added:", added, "Deleted:", deleted, "Net Change:", total }' > loc_report.txt
           cat loc_report.txt
 
       - name: Commit LOC Report
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config user.name "vibhavchipsy"
+          git config user.email "vibhavchipsy@gmail.com"
           git add loc_report.txt
           git commit -m "Daily LOC Report"
           git push
