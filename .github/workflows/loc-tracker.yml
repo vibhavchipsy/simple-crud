@@ -1,0 +1,32 @@
+name: LOC Tracker
+
+on:
+  push:
+    branches:
+      - main # Track changes on the main branch
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight
+
+jobs:
+  track-loc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install CLOC
+        run: sudo apt-get update && sudo apt-get install -y cloc
+
+      - name: Track Lines of Code
+        run: |
+          git log --since="yesterday" --pretty=tformat: --numstat | awk '{ added += $1; deleted += $2; total += $1 - $2 } END { print "Date:", strftime("%Y-%m-%d"), "Added:", added, "Deleted:", deleted, "Net Change:", total }' >> loc_report.txt
+          cat loc_report.txt
+
+      - name: Commit LOC Report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add loc_report.txt
+          git commit -m "Daily LOC Report"
+          git push
